@@ -237,6 +237,43 @@ asec:
 
 # Función: ax + b = y
 eq:
+# Inicializar variables
+    l.d $f28, zero      # Inicializar el resultado aproximado a 0
+    l.d $f26, one       # Inicializar la potencia a 1 (x^0)
+    l.d $f22, one       # Inicializar el término constante del polinomio
+    li $t1, 1           # Inicializar el iterador (k) a 1
+    li $t6, 2           # Inicializar la bandera de signo a 2 (restar en el primer término)
+
+    loopEq:
+        bge $t1, $t0, salirEq  # Si hemos alcanzado el número de iteraciones deseado, salir del bucle
+
+        # Cálculos para el término actual
+        li $t2, 1           # Inicializar el factorial a 1
+        li $t3, 1           # Inicializar el contador temporal para el factorial a 1
+        jal factorial       # Calcular factorial ($t2 = 1!)
+
+        mtc1 $t2, $f2       # Convertir factorial a double
+        cvt.d.w $f2, $f2    # Convertir a double para operar
+        div.d $f24, $f26, $f2   # x / factorial
+
+        # Actualizar resultado
+        beq $t6, 1, restarEq
+        beq $t6, 2, sumarEq
+
+        sumarEq:
+            add.d $f28, $f28, $f24  # Añadir al resultado
+            addi $t1, $t1, 1        # Incrementar el iterador
+            li $t6, 2               # Cambiar la bandera de signo a sumar
+            j loopEq
+
+        restarEq:
+            sub.d $f28, $f28, $f24  # Restar del resultado
+            addi $t1, $t1, 1        # Incrementar el iterador
+            li $t6, 1               # Cambiar la bandera de signo a restar
+            j loopEq
+    salirEq:
+        l.d $f28, $f28        # Copiar el resultado a $f28
+        j salida
             
     
                           
