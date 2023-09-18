@@ -272,8 +272,8 @@ eq:
             li $t6, 1               # Cambiar la bandera de signo a restar
             j loopEq
     salirEq:
-        l.d $f28, $f28        # Copiar el resultado a $f28
-        j salida
+       
+        j salir
             
     
                           
